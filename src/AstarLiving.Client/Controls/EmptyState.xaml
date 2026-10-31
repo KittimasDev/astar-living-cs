@@ -1,0 +1,26 @@
+<!-- ข้อความเมื่อตารางไม่มีข้อมูล — ตรงกับ locale.emptyText ของตารางในเว็บเดิม -->
+<UserControl x:Class="AstarLiving.Client.Controls.EmptyState"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Name="Root">
+
+    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,48,0,48">
+        <Path Data="M4,13 H9 L10.5,16 H13.5 L15,13 H20 M4,13 L6.5,5 H17.5 L20,13 V19 H4 Z"
+              Stroke="#FFD1D5DC"
+              StrokeThickness="1.4"
+              StrokeLineJoin="Round"
+              Fill="{x:Null}"
+              Stretch="Uniform"
+              Width="48" Height="48"
+              HorizontalAlignment="Center" />
+
+        <TextBlock Text="{Binding Message, ElementName=Root}"
+                   Foreground="#FFD1D5DC"
+                   FontSize="{StaticResource FontSizeLg}"
+                   Margin="0,10,0,0"
+                   HorizontalAlignment="Center" />
+    </StackPanel>
+</UserControl>

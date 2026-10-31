@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="QuestPDF" />
+    <PackageReference Include="SixLabors.ImageSharp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AstarLiving.Domain\AstarLiving.Domain.csproj" />
+    <ProjectReference Include="..\AstarLiving.Shared\AstarLiving.Shared.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Fonts\*.ttf" LogicalName="AstarLiving.Pdf.Fonts.%(Filename)%(Extension)" />
+  </ItemGroup>
+</Project>

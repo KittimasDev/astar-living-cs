@@ -1,0 +1,429 @@
+<!--
+    ฟอร์มของหน้าตั้งค่าทั้งหมด
+    ใช้โครงเดียวกับฟอร์มลูกบ้าน: หัวข้อกึ่งกลาง ช่องกรอก ช่องสถานะการใช้งาน แล้วปุ่มกลางล่าง
+-->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:b="clr-namespace:AstarLiving.Client.Common.Behaviors"
+                    xmlns:dlg="clr-namespace:AstarLiving.Client.ViewModels.Dialogs">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/Themes/Tokens.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Themes/Converters.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Themes/Buttons.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Themes/Inputs.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Themes/DataDisplay.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Themes/FormDialogTemplates.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <!-- หัวข้อของฟอร์ม ใช้ซ้ำทุกกล่อง -->
+    <Style x:Key="FormHeading" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="{StaticResource FontSizeLg}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="Margin" Value="0,0,0,28" />
+    </Style>
+
+    <!-- แถบปุ่มท้ายฟอร์ม -->
+    <DataTemplate x:Key="FormFooter">
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,30,0,0">
+            <Button Content="ย้อนกลับ" Style="{StaticResource SecondaryButton}"
+                    MinWidth="120" Height="40" Margin="0,0,12,0"
+                    Command="{Binding CancelCommand}" />
+            <Button Content="{Binding SubmitText}" Style="{StaticResource PrimaryButton}"
+                    MinWidth="120" Height="40"
+                    Command="{Binding SubmitCommand}"
+                    Visibility="{Binding CanEdit, Converter={StaticResource BoolToVisibility}}" />
+        </StackPanel>
+    </DataTemplate>
+
+    <!-- แถบแจ้งข้อผิดพลาดจากเครื่องแม่ข่าย -->
+    <DataTemplate x:Key="FormErrorBanner">
+        <Border Background="#FFFFF1F0" BorderBrush="#FFFFCCC7" BorderThickness="1"
+                CornerRadius="8" Padding="14,10,14,10" Margin="0,16,0,0"
+                Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibility}}">
+            <TextBlock Text="{Binding ErrorMessage}" Foreground="{StaticResource DangerBrush}" TextWrapping="Wrap" />
+        </Border>
+    </DataTemplate>
+
+    <!-- ── ฟอร์มโครงการ ─────────────────────────────────────────────────── -->
+    <DataTemplate DataType="{x:Type dlg:ProjectFormDialogViewModel}">
+        <StackPanel Margin="40,32,40,32">
+            <TextBlock Text="{Binding Title}" Style="{StaticResource FormHeading}" />
+
+            <!-- โลโก้โครงการ ไปปรากฏบนใบแจ้งหนี้ ใบเสร็จ และใบทวงถามที่พิมพ์ออกมา -->
+            <TextBlock Text="โลโก้โครงการ" Style="{StaticResource FieldLabel}" Margin="0,0,0,6" />
+
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
+                <Border Width="104" Height="104" CornerRadius="12"
+                        Background="{StaticResource TableHeaderBrush}"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="1">
+                    <Grid>
+                        <!-- ยังไม่มีรูป แสดงข้อความชวนให้เลือก -->
+                        <TextBlock Text="ยังไม่มีรูป"
+                                   Style="{StaticResource MutedText}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock.Visibility>
+                                <Binding Path="HasLogo" Converter="{StaticResource BoolToVisibility}"
+                                         ConverterParameter="invert" />
+                            </TextBlock.Visibility>
+                        </TextBlock>
+
+                        <Image Stretch="Uniform" Margin="8"
+                               Source="{Binding LogoPreview, Converter={StaticResource ImageSource}}"
+                               Visibility="{Binding HasLogo, Converter={StaticResource BoolToVisibility}}" />
+                    </Grid>
+                </Border>
+
+                <StackPanel Margin="16,0,0,0" VerticalAlignment="Center">
+                    <Button Content="เลือกรูป"
+                            Style="{StaticResource SecondaryButton}"
+                            Width="130" Height="38"
+                            HorizontalAlignment="Left"
+                            IsEnabled="{Binding CanEdit}"
+                            Command="{Binding PickLogoCommand}" />
+
+                    <Button Content="ยกเลิกรูปที่เลือก"
+                            Style="{StaticResource SecondaryButton}"
+                            Width="130" Height="34"
+                            HorizontalAlignment="Left"
+                            Margin="0,8,0,0"
+                            IsEnabled="{Binding CanEdit}"
+                            Command="{Binding ClearLogoCommand}"
+                            Visibility="{Binding SelectedLogoPath, Converter={StaticResource StringToVisibility}}" />
+
+                    <TextBlock Text="รองรับ JPG และ PNG ขนาดไม่เกิน 5 MB"
+                               Style="{StaticResource MutedText}"
+                               Margin="0,8,0,0" />
+                </StackPanel>
+            </StackPanel>
+
+            <TextBlock Style="{StaticResource FieldErrorText}" Margin="2,0,0,0" Text="{Binding LogoError}"
+                       Visibility="{Binding LogoError, Converter={StaticResource StringToVisibility}}" />
+
+            <StackPanel Orientation="Horizontal" Margin="0,18,0,0">
+                <TextBlock Text="ชื่อโครงการ" Style="{StaticResource FieldLabel}" />
+                <TextBlock Text=" *" Style="{StaticResource FieldLabel}" Foreground="{StaticResource DangerBrush}" />
+            </StackPanel>
+            <TextBox Style="{StaticResource FormTextBox}" b:Placeholder.Text="กรอกชื่อโครงการ"
+                     IsEnabled="{Binding CanEdit}" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBlock Style="{StaticResource FieldErrorText}" Margin="2,4,0,0" Text="{Binding NameError}"
+                       Visibility="{Binding NameError, Converter={StaticResource StringToVisibility}}" />
+
+            <TextBlock Text="ที่อยู่โครงการ" Style="{StaticResource FieldLabel}" Margin="0,18,0,6" />
+            <TextBox Style="{StaticResource MultilineTextBox}" MinHeight="80" b:Placeholder.Text="กรอกที่อยู่โครงการ"
+                     IsEnabled="{Binding CanEdit}" Text="{Binding Address, UpdateSourceTrigger=PropertyChanged}" />
+
+            <Grid Margin="0,18,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="20" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="ผู้ประสานงาน" Style="{StaticResource FieldLabel}" />
+                    <TextBox Style="{StaticResource FormTextBox}" b:Placeholder.Text="กรอกชื่อผู้ประสานงาน"
+                             IsEnabled="{Binding CanEdit}" Text="{Binding ContactName, UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="2">
+                    <TextBlock Text="เบอร์โทรติดต่อ" Style="{StaticResource FieldLabel}" />
+                    <TextBox Style="{StaticResource FormTextBox}" b:Placeholder.Text="กรอกเบอร์โทรติดต่อ"
+                             IsEnabled="{Binding CanEdit}" Text="{Binding ContactPhone, UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
+            </Grid>
+
+            <TextBlock Text="เบอร์แฟกซ์" Style="{StaticResource FieldLabel}" Margin="0,18,0,6" />
+            <TextBox Style="{StaticResource FormTextBox}" b:Placeholder.Text="กรอกเบอร์แฟกซ์"
+                     IsEnabled="{Binding CanEdit}" Text="{Binding ContactFaxPhone, UpdateSourceTrigger=PropertyChanged}" />
+
+            <CheckBox Style="{StaticResource AppCheckBox}" Content="เปิดใช้งานโครงการนี้" Margin="0,20,0,0"
+                      IsEnabled="{Binding CanEdit}" IsChecked="{Binding Active}" />
+
+            <ContentControl ContentTemplate="{StaticResource FormErrorBanner}" Content="{Binding}" />
+            <ContentControl ContentTemplate="{StaticResource FormFooter}" Content="{Binding}" />
+        </StackPanel>
+    </DataTemplate>
+
+    <!-- ── ฟอร์มวิธีการชำระเงิน ──────────────────────────────────────────── -->
+    <DataTemplate DataType="{x:Type dlg:PaymentMethodFormDialogViewModel}">
+        <StackPanel Margin="40,32,40,32">
+            <TextBlock Text="{Binding Title}" Style="{StaticResource FormHeading}" />
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="20" />
+                    <ColumnDefinition Width="1.5*" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="รหัส" Style="{StaticResource FieldLabel}" />
+                        <TextBlock Text=" *" Style="{StaticResource FieldLabel}" Foreground="{StaticResource DangerBrush}" />
+                    </StackPanel>
+                    <TextBox Style="{StaticResource FormTextBox}" b:Placeholder.Text="เช่น CASH"
+                             IsEnabled="{Binding CanEdit}" Text="{Binding Code, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBlock Style="{StaticResource FieldErrorText}" Margin="2,4,0,0" Text="{Binding CodeError}"
+                               Visibility="{Binding CodeError, Converter={StaticResource StringToVisibility}}" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="2">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="ชื่อวิธีการชำระเงิน" Style="{StaticResource FieldLabel}" />
+                        <TextBlock Text=" *" Style="{StaticResource FieldLabel}" Foreground="{StaticResource DangerBrush}" />
+                    </StackPanel>
+                    <TextBox Style="{StaticResource FormTextBox}" b:Placeholder.Text="เช่น เงินสด"
+                             IsEnabled="{Binding CanEdit}" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBlock Style="{StaticResource FieldErrorText}" Margin="2,4,0,0" Text="{Binding NameError}"
+                               Visibility="{Binding NameError, Converter={StaticResource StringToVisibility}}" />
+                </StackPanel>
+            </Grid>
+
+            <TextBlock Text="รายละเอียดเพิ่มเติม" Style="{StaticResource FieldLabel}" Margin="0,18,0,6" />
+            <TextBox Style="{StaticResource MultilineTextBox}" MinHeight="80" b:Placeholder.Text="กรอกรายละเอียดเพิ่มเติม"
+                     IsEnabled="{Binding CanEdit}" Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}" />
+
+            <CheckBox Style="{StaticResource AppCheckBox}" Content="เปิดใช้งานวิธีการชำระเงินนี้" Margin="0,20,0,0"
+                      IsEnabled="{Binding CanEdit}" IsChecked="{Binding Active}" />
+
+            <ContentControl ContentTemplate="{StaticResource FormErrorBanner}" Content="{Binding}" />
+            <ContentControl ContentTemplate="{StaticResource FormFooter}" Content="{Binding}" />
+        </StackPanel>
+    </DataTemplate>
+
+    <!-- ── ฟอร์มอัตราค่าบริการ ───────────────────────────────────────────── -->
+    <DataTemplate DataType="{x:Type dlg:RateFormDialogViewModel}">
+        <StackPanel Margin="40,32,40,32">
+            <TextBlock Text="{Binding Title}" Style="{StaticResource FormHeading}" />
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="20" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="20" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="18" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0" Grid.Column="0">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="ค่าส่วนกลาง/ตร.ว." Style="{StaticResource FieldLabel}" />
+                        <TextBlock Text=" *" Style="{StaticResource FieldLabel}" Foreground="{StaticResource DangerBrush}" />
+                    </StackPanel>
+                    <TextBox Style="{StaticResource FormTextBox}" b:Placeholder.Text="เช่น 50"
+                             IsEnabled="{Binding CanEdit}" Text="{Binding MaintenanceFeeRate, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBlock Style="{StaticResource FieldErrorText}" Margin="2,4,0,0" Text="{Binding MaintenanceFeeRateError}"
+                               Visibility="{Binding MaintenanceFeeRateError, Converter={StaticResource StringToVisibility}}" />
+                </StackPanel>
+
+                <StackPanel Grid.Row="0" Grid.Column="2">
+                    <TextBlock Text="ค่าเบี้ยปรับ (%)" Style="{StaticResource FieldLabel}" />
+                    <TextBox Style="{StaticResource FormTextBox}" b:Placeholder.Text="เช่น 10"
+                             IsEnabled="{Binding CanEdit}" Text="{Binding FineRate, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBlock Style="{StaticResource FieldErrorText}" Margin="2,4,0,0" Text="{Binding FineRateError}"
+                               Visibility="{Binding FineRateError, Converter={StaticResource StringToVisibility}}" />
+                </StackPanel>
+
+                <StackPanel Grid.Row="0" Grid.Column="4">
+                    <TextBlock Text="ค่าทวงถาม/เดือน" Style="{StaticResource FieldLabel}" />
+                    <TextBox Style="{StaticResource FormTextBox}" b:Placeholder.Text="เช่น 200"
+                             IsEnabled="{Binding CanEdit}" Text="{Binding CollectionFee, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBlock Style="{StaticResource FieldErrorText}" Margin="2,4,0,0" Text="{Binding CollectionFeeError}"
+                               Visibility="{Binding CollectionFeeError, Converter={StaticResource StringToVisibility}}" />
+                </StackPanel>
+
+                <StackPanel Grid.Row="2" Grid.Column="0">
+                    <TextBlock Text="ส่วนลดรายปี (%)" Style="{StaticResource FieldLabel}" />
+                    <TextBox Style="{StaticResource FormTextBox}" b:Placeholder.Text="เช่น 5"
+                             IsEnabled="{Binding CanEdit}" Text="{Binding DiscountRate, UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
+
+                <StackPanel Grid.Row="2" Grid.Column="2">
+                    <TextBlock Text="Prefix ใบแจ้งหนี้" Style="{StaticResource FieldLabel}" />
+                    <TextBox Style="{StaticResource FormTextBox}" b:Placeholder.Text="เช่น INV"
+                             IsEnabled="{Binding CanEdit}" Text="{Binding InvoicePrefix, UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
+
+                <StackPanel Grid.Row="2" Grid.Column="4">
+                    <TextBlock Text="Prefix ใบเสร็จ" Style="{StaticResource FieldLabel}" />
+                    <TextBox Style="{StaticResource FormTextBox}" b:Placeholder.Text="เช่น REC"
+                             IsEnabled="{Binding CanEdit}" Text="{Binding ReceiptPrefix, UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
+            </Grid>
+
+            <TextBlock Text="หมายเหตุท้ายใบแจ้งหนี้" Style="{StaticResource FieldLabel}" Margin="0,18,0,6" />
+            <TextBox Style="{StaticResource MultilineTextBox}" MinHeight="70"
+                     b:Placeholder.Text="ข้อความที่พิมพ์ท้ายใบแจ้งหนี้"
+                     IsEnabled="{Binding CanEdit}" Text="{Binding InvoiceNote, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock Text="หมายเหตุท้ายใบเสร็จ" Style="{StaticResource FieldLabel}" Margin="0,18,0,6" />
+            <TextBox Style="{StaticResource MultilineTextBox}" MinHeight="70"
+                     b:Placeholder.Text="ข้อความที่พิมพ์ท้ายใบเสร็จ"
+                     IsEnabled="{Binding CanEdit}" Text="{Binding ReceiptNote, UpdateSourceTrigger=PropertyChanged}" />
+
+            <CheckBox Style="{StaticResource AppCheckBox}" Content="เปิดใช้งานอัตรานี้" Margin="0,20,0,0"
+                      IsEnabled="{Binding CanEdit}" IsChecked="{Binding Active}" />
+
+            <ContentControl ContentTemplate="{StaticResource FormErrorBanner}" Content="{Binding}" />
+            <ContentControl ContentTemplate="{StaticResource FormFooter}" Content="{Binding}" />
+        </StackPanel>
+    </DataTemplate>
+
+    <!-- ── ฟอร์มเทมเพลตใบทวงถาม ──────────────────────────────────────────── -->
+    <DataTemplate DataType="{x:Type dlg:NoticeTemplateFormDialogViewModel}">
+        <StackPanel Margin="40,32,40,32">
+            <TextBlock Text="{Binding Title}" Style="{StaticResource FormHeading}" />
+
+            <Border Background="{StaticResource TableHeaderBrush}" CornerRadius="8" Padding="14,10,14,10" Margin="0,0,0,18">
+                <TextBlock Text="{Binding TokenHint}" Foreground="{StaticResource DeepBlueBrush}" TextWrapping="Wrap" />
+            </Border>
+
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="ชื่อหัวข้อ" Style="{StaticResource FieldLabel}" />
+                <TextBlock Text=" *" Style="{StaticResource FieldLabel}" Foreground="{StaticResource DangerBrush}" />
+            </StackPanel>
+            <TextBox Style="{StaticResource FormTextBox}" b:Placeholder.Text="เช่น หนังสือทวงถามค่าส่วนกลาง"
+                     IsEnabled="{Binding CanEdit}" Text="{Binding TopicName, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBlock Style="{StaticResource FieldErrorText}" Margin="2,4,0,0" Text="{Binding TopicNameError}"
+                       Visibility="{Binding TopicNameError, Converter={StaticResource StringToVisibility}}" />
+
+            <TextBlock Text="เนื้อหาส่วนต้น" Style="{StaticResource FieldLabel}" Margin="0,18,0,6" />
+            <TextBox Style="{StaticResource MultilineTextBox}" MinHeight="80"
+                     b:Placeholder.Text="ตามที่ท่าน {resident_name} ได้ค้างชำระ..."
+                     IsEnabled="{Binding CanEdit}" Text="{Binding IntroductionDetail, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock Text="เนื้อหาเพิ่มเติม" Style="{StaticResource FieldLabel}" Margin="0,18,0,6" />
+            <TextBox Style="{StaticResource MultilineTextBox}" MinHeight="80"
+                     IsEnabled="{Binding CanEdit}" Text="{Binding AdditionalDetail, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock Text="ข้อความปิดท้าย" Style="{StaticResource FieldLabel}" Margin="0,18,0,6" />
+            <TextBox Style="{StaticResource MultilineTextBox}" MinHeight="70"
+                     IsEnabled="{Binding CanEdit}" Text="{Binding ClosureText, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock Text="คำลงท้าย" Style="{StaticResource FieldLabel}" Margin="0,18,0,6" />
+            <TextBox Style="{StaticResource FormTextBox}" b:Placeholder.Text="เช่น ขอแสดงความนับถือ"
+                     IsEnabled="{Binding CanEdit}" Text="{Binding ClosingWord, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock Text="หมายเหตุ" Style="{StaticResource FieldLabel}" Margin="0,18,0,6" />
+            <TextBox Style="{StaticResource MultilineTextBox}" MinHeight="70"
+                     IsEnabled="{Binding CanEdit}" Text="{Binding Remark, UpdateSourceTrigger=PropertyChanged}" />
+
+            <CheckBox Style="{StaticResource AppCheckBox}" Content="เปิดใช้งานเทมเพลตนี้" Margin="0,20,0,0"
+                      IsEnabled="{Binding CanEdit}" IsChecked="{Binding Active}" />
+
+            <ContentControl ContentTemplate="{StaticResource FormErrorBanner}" Content="{Binding}" />
+            <ContentControl ContentTemplate="{StaticResource FormFooter}" Content="{Binding}" />
+        </StackPanel>
+    </DataTemplate>
+
+    <!-- ── ฟอร์มผู้ใช้งาน ────────────────────────────────────────────────── -->
+    <DataTemplate DataType="{x:Type dlg:UserFormDialogViewModel}">
+        <StackPanel Margin="40,32,40,32">
+            <TextBlock Text="{Binding Title}" Style="{StaticResource FormHeading}" />
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="20" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="18" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="18" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="18" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0" Grid.Column="0">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="ชื่อผู้ใช้งาน" Style="{StaticResource FieldLabel}" />
+                        <TextBlock Text=" *" Style="{StaticResource FieldLabel}" Foreground="{StaticResource DangerBrush}" />
+                    </StackPanel>
+                    <TextBox Style="{StaticResource FormTextBox}" b:Placeholder.Text="กรอกชื่อผู้ใช้งาน"
+                             IsEnabled="{Binding CanEdit}" Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBlock Style="{StaticResource FieldErrorText}" Margin="2,4,0,0" Text="{Binding UsernameError}"
+                               Visibility="{Binding UsernameError, Converter={StaticResource StringToVisibility}}" />
+                </StackPanel>
+
+                <StackPanel Grid.Row="0" Grid.Column="2">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="ชื่อ-นามสกุล" Style="{StaticResource FieldLabel}" />
+                        <TextBlock Text=" *" Style="{StaticResource FieldLabel}" Foreground="{StaticResource DangerBrush}" />
+                    </StackPanel>
+                    <TextBox Style="{StaticResource FormTextBox}" b:Placeholder.Text="กรอกชื่อ-นามสกุล"
+                             IsEnabled="{Binding CanEdit}" Text="{Binding FullName, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBlock Style="{StaticResource FieldErrorText}" Margin="2,4,0,0" Text="{Binding FullNameError}"
+                               Visibility="{Binding FullNameError, Converter={StaticResource StringToVisibility}}" />
+                </StackPanel>
+
+                <StackPanel Grid.Row="2" Grid.Column="0">
+                    <TextBlock Text="รหัสผ่าน" Style="{StaticResource FieldLabel}" />
+                    <PasswordBox Style="{StaticResource PillPasswordBox}" Height="40"
+                                 b:Placeholder.Text="{Binding PasswordHint}"
+                                 b:PasswordBoxBinder.Attach="True"
+                                 b:PasswordBoxBinder.SecurePassword="{Binding Password, Mode=TwoWay}"
+                                 IsEnabled="{Binding CanEdit}" />
+                    <TextBlock Style="{StaticResource FieldErrorText}" Margin="2,4,0,0" Text="{Binding PasswordError}"
+                               Visibility="{Binding PasswordError, Converter={StaticResource StringToVisibility}}" />
+                </StackPanel>
+
+                <StackPanel Grid.Row="2" Grid.Column="2">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="สิทธิ์ผู้ใช้งาน" Style="{StaticResource FieldLabel}" />
+                        <TextBlock Text=" *" Style="{StaticResource FieldLabel}" Foreground="{StaticResource DangerBrush}" />
+                    </StackPanel>
+                    <ComboBox Style="{StaticResource FormComboBox}"
+                              ItemsSource="{Binding Roles}"
+                              SelectedItem="{Binding SelectedRole}"
+                              IsEnabled="{Binding CanEdit}"
+                              b:Placeholder.Text="เลือกสิทธิ์ผู้ใช้งาน" />
+                </StackPanel>
+
+                <StackPanel Grid.Row="4" Grid.Column="0">
+                    <TextBlock Text="อีเมล" Style="{StaticResource FieldLabel}" />
+                    <TextBox Style="{StaticResource FormTextBox}" b:Placeholder.Text="กรอกอีเมล"
+                             IsEnabled="{Binding CanEdit}" Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
+
+                <StackPanel Grid.Row="4" Grid.Column="2">
+                    <TextBlock Text="เบอร์โทร" Style="{StaticResource FieldLabel}" />
+                    <TextBox Style="{StaticResource FormTextBox}" b:Placeholder.Text="กรอกเบอร์โทร"
+                             IsEnabled="{Binding CanEdit}" Text="{Binding Phone, UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
+
+                <!-- โครงการที่บัญชีนี้สังกัด ซ่อนไว้เมื่อมีโครงการเดียวเพราะไม่มีอะไรให้เลือก -->
+                <StackPanel Grid.Row="6" Grid.Column="0"
+                            Visibility="{Binding CanChooseProject, Converter={StaticResource BoolToVisibility}}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="โครงการ" Style="{StaticResource FieldLabel}" />
+                        <TextBlock Text=" *" Style="{StaticResource FieldLabel}" Foreground="{StaticResource DangerBrush}" />
+                    </StackPanel>
+                    <ComboBox Style="{StaticResource FormComboBox}"
+                              ItemsSource="{Binding Projects}"
+                              SelectedItem="{Binding SelectedProject}"
+                              IsEnabled="{Binding CanEdit}"
+                              b:Placeholder.Text="เลือกโครงการ" />
+                </StackPanel>
+            </Grid>
+
+            <CheckBox Style="{StaticResource AppCheckBox}" Content="เปิดใช้งานบัญชีนี้" Margin="0,20,0,0"
+                      IsEnabled="{Binding CanEdit}" IsChecked="{Binding Active}" />
+
+            <ContentControl ContentTemplate="{StaticResource FormErrorBanner}" Content="{Binding}" />
+            <ContentControl ContentTemplate="{StaticResource FormFooter}" Content="{Binding}" />
+        </StackPanel>
+    </DataTemplate>
+
+</ResourceDictionary>

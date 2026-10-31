@@ -1,0 +1,10 @@
+bin/
+obj/
+artifacts/
+*.user
+.vs/
+
+# ไฟล์ของบุคคลที่สามที่ดาวน์โหลดมาเตรียมฝังในตัวติดตั้ง (ขนาดหลายร้อย MB)
+build/vendor/*.zip
+build/vendor/pgsql/
+build/vendor/runtime/

@@ -1,0 +1,121 @@
+<!--
+    แถบเลขหน้ากึ่งกลางใต้ตาราง — พอร์ตหน้าตาจาก .ant-pagination ที่เว็บเดิมจัดรูปแบบเอง
+    ผูกกับ ListPageViewModel โดยตรง ทุกหน้าจอจึงวางแท็กนี้บรรทัดเดียวแล้วใช้ได้เลย
+-->
+<UserControl x:Class="AstarLiving.Client.Controls.PaginationBar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <!-- ปุ่มเลขหน้า: ขนาด 36x36 ขอบเทา หน้าปัจจุบันเป็นพื้นฟ้าอ่อนตัวหนา -->
+        <Style x:Key="PageButton" TargetType="Button">
+            <Setter Property="Width" Value="36" />
+            <Setter Property="Height" Value="36" />
+            <Setter Property="Margin" Value="3,0,3,0" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Root"
+                                Background="{StaticResource SurfaceBrush}"
+                                BorderBrush="#FFD9D9D9"
+                                BorderThickness="1"
+                                CornerRadius="6">
+                            <TextBlock x:Name="Label"
+                                       Text="{TemplateBinding Content}"
+                                       Foreground="#FF333333"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Root" Property="BorderBrush" Value="{StaticResource BrandBlueBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Root" Property="Opacity" Value="0.4" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <StackPanel Orientation="Horizontal"
+                HorizontalAlignment="Center"
+                Margin="0,28,0,8"
+                Visibility="{Binding TotalPages, Converter={StaticResource EmptyToVisibility}, ConverterParameter=invert}">
+
+        <Button Style="{StaticResource PageButton}"
+                Content="&lt;"
+                Command="{Binding PreviousPageCommand}"
+                IsEnabled="{Binding HasPreviousPage}"
+                ToolTip="หน้าก่อนหน้า" />
+
+        <ItemsControl ItemsSource="{Binding PageNumbers}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Button Style="{StaticResource PageButton}"
+                            Content="{Binding}"
+                            Command="{Binding DataContext.GoToPageCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                            CommandParameter="{Binding}">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="Root"
+                                        Background="{StaticResource SurfaceBrush}"
+                                        BorderBrush="#FFD9D9D9"
+                                        BorderThickness="1"
+                                        CornerRadius="6">
+                                    <!-- ผูกกับ DataContext ตรง ๆ เพราะ TemplateBinding ไม่แปลงตัวเลขเป็นข้อความให้ -->
+                                    <TextBlock x:Name="Label"
+                                               Text="{Binding}"
+                                               Foreground="#FF333333"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center" />
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <!-- เทียบเลขปุ่มกับหน้าปัจจุบันของ view model -->
+                                    <DataTrigger Value="True">
+                                        <DataTrigger.Binding>
+                                            <MultiBinding Converter="{StaticResource AreEqual}">
+                                                <Binding Path="Content" RelativeSource="{RelativeSource Self}" />
+                                                <Binding Path="DataContext.Page" RelativeSource="{RelativeSource AncestorType=UserControl}" />
+                                            </MultiBinding>
+                                        </DataTrigger.Binding>
+                                        <Setter TargetName="Root" Property="Background" Value="{StaticResource MenuSelectedBrush}" />
+                                        <Setter TargetName="Root" Property="BorderBrush" Value="{StaticResource DeepBlueBrush}" />
+                                        <Setter TargetName="Label" Property="Foreground" Value="{StaticResource DeepBlueBrush}" />
+                                        <Setter TargetName="Label" Property="FontWeight" Value="SemiBold" />
+                                    </DataTrigger>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="Root" Property="BorderBrush" Value="{StaticResource BrandBlueBrush}" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <Button Style="{StaticResource PageButton}"
+                Content="&gt;"
+                Command="{Binding NextPageCommand}"
+                IsEnabled="{Binding HasNextPage}"
+                ToolTip="หน้าถัดไป" />
+
+        <TextBlock VerticalAlignment="Center" Margin="16,0,0,0" Style="{StaticResource MutedText}">
+            <Run Text="ทั้งหมด" />
+            <Run Text="{Binding TotalItems, Mode=OneWay, StringFormat={}{0:#,##0}}" />
+            <Run Text="รายการ" />
+        </TextBlock>
+    </StackPanel>
+</UserControl>

@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>AstarLiving.Setup</AssemblyName>
+    <RootNamespace>AstarLiving.Setup</RootNamespace>
+    <!-- เครื่องมือนี้ใช้ DPAPI จึงรันได้เฉพาะบน Windows -->
+    <SupportedOSPlatform>windows</SupportedOSPlatform>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AstarLiving.Shared\AstarLiving.Shared.csproj" />
+  </ItemGroup>
+</Project>

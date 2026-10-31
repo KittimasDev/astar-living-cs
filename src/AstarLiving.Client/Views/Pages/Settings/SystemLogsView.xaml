@@ -1,0 +1,40 @@
+<UserControl x:Class="AstarLiving.Client.Views.Pages.Settings.SystemLogsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ctl="clr-namespace:AstarLiving.Client.Controls"
+             xmlns:pages="clr-namespace:AstarLiving.Client.ViewModels.Pages"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=pages:SystemLogsPageViewModel}">
+
+    <ctl:ListPageShell SearchPlaceholder="ค้นหารายการ" CreateText="" EmptyMessage="ยังไม่มีบันทึกการทำงาน" ShowCreate="False">
+        <ctl:ListPageShell.Table>
+            <DataGrid Style="{StaticResource AppDataGrid}" ItemsSource="{Binding Items}">
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Header="ลำดับ" Width="Auto" MinWidth="88">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock HorizontalAlignment="Center">
+                                    <TextBlock.Text>
+                                        <MultiBinding Converter="{StaticResource RowNumber}">
+                                            <Binding />
+                                            <Binding Path="DataContext.Items" RelativeSource="{RelativeSource AncestorType=UserControl}" />
+                                            <Binding Path="DataContext.Page" RelativeSource="{RelativeSource AncestorType=UserControl}" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="ผู้ใช้งาน" Binding="{Binding FullName}" Width="1.5*" MinWidth="150" ElementStyle="{StaticResource LeftCell}" />
+                    <DataGridTextColumn Header="ชื่อผู้ใช้" Binding="{Binding Username}" Width="*" MinWidth="150" ElementStyle="{StaticResource LeftCell}" />
+                    <DataGridTextColumn Header="รายการ" Binding="{Binding Action}" Width="2.5*" MinWidth="200" ElementStyle="{StaticResource LeftCell}" />
+                    <DataGridTextColumn Header="ตาราง" Binding="{Binding TargetTable}" Width="*" MinWidth="92" ElementStyle="{StaticResource LeftCell}" />
+                    <DataGridTextColumn Header="รหัสอ้างอิง" Binding="{Binding TargetId}" Width="Auto" MinWidth="120" ElementStyle="{StaticResource NumberCell}" />
+                    <DataGridTextColumn Header="วันที่" Binding="{Binding Timestamp, StringFormat={}{0:dd/MM/yyyy HH:mm}}" Width="1.5*" MinWidth="81" ElementStyle="{StaticResource LeftCell}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </ctl:ListPageShell.Table>
+    </ctl:ListPageShell>
+</UserControl>

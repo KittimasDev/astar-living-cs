@@ -1,0 +1,118 @@
+<UserControl x:Class="AstarLiving.Client.Views.Pages.ReceiptView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ctl="clr-namespace:AstarLiving.Client.Controls"
+             xmlns:pages="clr-namespace:AstarLiving.Client.ViewModels.Pages"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=pages:ReceiptPageViewModel}">
+
+    <UserControl.Resources>
+        <!-- ปุ่มสลับโหมดสองปุ่มบนสุด เลียนแท็บของเว็บเดิม -->
+        <Style x:Key="ModeTab" TargetType="RadioButton">
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="GroupName" Value="ReceiptMode" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border x:Name="Root" Background="Transparent" Padding="20,9,20,9" CornerRadius="20">
+                            <ContentPresenter x:Name="Label" VerticalAlignment="Center"
+                                              TextElement.Foreground="{StaticResource TextSecondaryBrush}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Root" Property="Background" Value="{StaticResource MenuSelectedBrush}" />
+                                <Setter TargetName="Label" Property="TextElement.Foreground" Value="{StaticResource DeepBlueBrush}" />
+                                <Setter TargetName="Label" Property="TextElement.FontWeight" Value="SemiBold" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Label" Property="TextElement.Foreground" Value="{StaticResource DeepBlueBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <ctl:ListPageShell SearchPlaceholder="ค้นหาบ้านเลขที่"
+                       CreateText="{Binding CreateText}"
+                       EmptyMessage="ยังไม่มีใบเสร็จ">
+
+        <ctl:ListPageShell.Filters>
+            <StackPanel Orientation="Horizontal">
+                <RadioButton Style="{StaticResource ModeTab}" Content="ใบเสร็จค่าส่วนกลาง"
+                             IsChecked="{Binding IsRevenueMode, Converter={StaticResource InverseBool}, Mode=OneWay}"
+                             Command="{Binding ShowMaintenanceModeCommand}" />
+                <RadioButton Style="{StaticResource ModeTab}" Content="ใบเสร็จรายรับอื่น ๆ"
+                             IsChecked="{Binding IsRevenueMode, Mode=OneWay}"
+                             Command="{Binding ShowRevenueModeCommand}" />
+            </StackPanel>
+        </ctl:ListPageShell.Filters>
+
+        <ctl:ListPageShell.Table>
+            <DataGrid Style="{StaticResource AppDataGrid}" ItemsSource="{Binding Items}">
+                <DataGrid.Columns>
+                    <!-- เลขลำดับนับต่อเนื่องข้ามหน้า เหมือนระบบเดิม -->
+                    <DataGridTemplateColumn Header="ลำดับ" Width="Auto" MinWidth="88">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock HorizontalAlignment="Center">
+                                    <TextBlock.Text>
+                                        <MultiBinding Converter="{StaticResource RowNumber}">
+                                            <Binding />
+                                            <Binding Path="DataContext.Items"
+                                                     RelativeSource="{RelativeSource AncestorType=UserControl}" />
+                                            <Binding Path="DataContext.Page"
+                                                     RelativeSource="{RelativeSource AncestorType=UserControl}" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="เลขที่ใบเสร็จรับเงิน" Binding="{Binding ReceiptNo}" Width="1.4*" MinWidth="161" ElementStyle="{StaticResource LeftCell}" />
+                    <DataGridTextColumn Header="บ้านเลขที่" Binding="{Binding HouseNo}" Width="*" MinWidth="110" ElementStyle="{StaticResource LeftCell}" />
+                    <DataGridTextColumn Header="ชื่อ-นามสกุล" Binding="{Binding FullName}" Width="2*" MinWidth="200" ElementStyle="{StaticResource LeftCell}" />
+                    <DataGridTextColumn Header="วันที่ออกใบเสร็จ" Binding="{Binding IssueDateText}" Width="*" MinWidth="145" ElementStyle="{StaticResource LeftCell}" />
+                    <DataGridTextColumn Header="รายการ" Binding="{Binding PeriodText}" Width="1.4*" MinWidth="200" ElementStyle="{StaticResource LeftCell}" />
+                    <DataGridTextColumn Header="ยอดที่ชำระทั้งหมด (บาท)" Binding="{Binding TotalText}" Width="Auto" MinWidth="193"
+                                        ElementStyle="{StaticResource NumberCell}" />
+
+                    <DataGridTemplateColumn Header="สถานะ" Width="Auto" MinWidth="130">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <ContentControl Content="{Binding Active}" ContentTemplate="{StaticResource ActiveStatusPill}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="" Width="160" MinWidth="160">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <Button Style="{StaticResource IconButton}" ToolTip="พิมพ์ใบเสร็จ"
+                                            Command="{Binding DataContext.PrintCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            CommandParameter="{Binding}">
+                                        <Path Style="{StaticResource IconPath}" Data="{StaticResource IconPrint}"
+                                              Stroke="{StaticResource DeepBlueBrush}" Width="17" Height="17" />
+                                    </Button>
+
+                                    <Button Style="{StaticResource SecondaryButton}"
+                                            Height="32" MinWidth="90" FontSize="{StaticResource FontSizeSm}"
+                                            Margin="6,0,0,0"
+                                            Content="ยกเลิก"
+                                            Foreground="{StaticResource DangerBrush}"
+                                            IsEnabled="{Binding CanCancel}"
+                                            Command="{Binding DataContext.CancelReceiptCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            CommandParameter="{Binding}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </ctl:ListPageShell.Table>
+    </ctl:ListPageShell>
+</UserControl>

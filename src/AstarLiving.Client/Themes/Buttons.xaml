@@ -1,0 +1,170 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--
+        ต้องรวม Tokens เข้ามาเอง ไม่ใช่พึ่งว่า Theme.xaml รวมให้แล้ว
+        เพราะพจนานุกรมที่เป็นพี่น้องกันมองหาคีย์ข้ามกันไม่ได้ตอนโหลด
+        ถ้าไม่ใส่ Setter ที่อ้าง StaticResource จะได้ค่า UnsetValue เงียบ ๆ
+        แล้วไปพังตอนวัดขนาดหน้าจอแทน ซึ่งหาสาเหตุยากมาก
+    -->
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/Themes/Tokens.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <!--
+        ปุ่มทุกแบบใช้ template เดียวกัน ต่างกันแค่สีและขนาด
+        ปุ่มในเว็บเดิมไม่มีเส้นขอบและมุมมนค่อนข้างมาก จึงยึดแบบนั้น
+    -->
+    <ControlTemplate x:Key="FlatButtonTemplate" TargetType="Button">
+        <Border x:Name="Root"
+                Background="{TemplateBinding Background}"
+                BorderBrush="{TemplateBinding BorderBrush}"
+                BorderThickness="{TemplateBinding BorderThickness}"
+                CornerRadius="{StaticResource PillRadius}"
+                SnapsToDevicePixels="True">
+            <ContentPresenter x:Name="Content"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center"
+                              Margin="{TemplateBinding Padding}"
+                              RecognizesAccessKey="True"
+                              TextElement.Foreground="{TemplateBinding Foreground}"
+                              TextElement.FontWeight="{TemplateBinding FontWeight}"
+                              TextElement.FontSize="{TemplateBinding FontSize}" />
+        </Border>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="Root" Property="Opacity" Value="0.88" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter TargetName="Root" Property="Opacity" Value="0.74" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter TargetName="Root" Property="Opacity" Value="0.45" />
+                <Setter TargetName="Root" Property="Background" Value="{StaticResource DisabledBrush}" />
+                <Setter TargetName="Content" Property="TextElement.Foreground" Value="{StaticResource TextMutedBrush}" />
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <!-- ปุ่มหลัก 150x38 ตามสัดส่วนของเว็บเดิม -->
+    <Style x:Key="PrimaryButton" TargetType="Button">
+        <Setter Property="Template" Value="{StaticResource FlatButtonTemplate}" />
+        <Setter Property="Background" Value="{StaticResource BrandBlueBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource TextOnBrandBrush}" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="FontSize" Value="{StaticResource FontSizeBase}" />
+        <Setter Property="MinWidth" Value="{StaticResource PrimaryButtonWidth}" />
+        <Setter Property="Height" Value="{StaticResource PrimaryButtonHeight}" />
+        <Setter Property="Padding" Value="20,0,20,0" />
+        <Setter Property="Cursor" Value="Hand" />
+    </Style>
+
+    <!-- ปุ่มรอง พื้นขาวขอบเทา ใช้คู่กับปุ่มหลักในหน้ายืนยัน -->
+    <Style x:Key="SecondaryButton" TargetType="Button" BasedOn="{StaticResource PrimaryButton}">
+        <Setter Property="Background" Value="{StaticResource SurfaceBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource BorderSubtleBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="FontWeight" Value="Normal" />
+    </Style>
+
+    <Style x:Key="SuccessButton" TargetType="Button" BasedOn="{StaticResource PrimaryButton}">
+        <Setter Property="Background" Value="{StaticResource ActionGreenBrush}" />
+    </Style>
+
+    <Style x:Key="DangerButton" TargetType="Button" BasedOn="{StaticResource PrimaryButton}">
+        <Setter Property="Background" Value="{StaticResource DangerBrush}" />
+    </Style>
+
+    <!-- ปุ่มสร้างหรือเพิ่มข้อมูล มุมมนน้อยกว่าและสูงกว่าตามเว็บเดิม -->
+    <Style x:Key="CreateButton" TargetType="Button" BasedOn="{StaticResource PrimaryButton}">
+        <Setter Property="Background" Value="{StaticResource ActionGreenBrush}" />
+        <Setter Property="Height" Value="{StaticResource CreateButtonHeight}" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="Padding" Value="22,0,22,0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Root"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="{StaticResource ButtonRadius}"
+                            SnapsToDevicePixels="True">
+                        <ContentPresenter x:Name="Content"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Margin="{TemplateBinding Padding}"
+                                          TextElement.Foreground="{TemplateBinding Foreground}"
+                                          TextElement.FontWeight="SemiBold"
+                                          TextElement.FontSize="{TemplateBinding FontSize}" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Root" Property="Background" Value="{StaticResource ActionGreenHoverBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Root" Property="Background" Value="{StaticResource DisabledBrush}" />
+                            <Setter TargetName="Content" Property="TextElement.Foreground" Value="{StaticResource TextMutedBrush}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ปุ่มไอคอนในตาราง ดู แก้ไข ลบ -->
+    <Style x:Key="IconButton" TargetType="Button">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Width" Value="32" />
+        <Setter Property="Height" Value="32" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Foreground" Value="{StaticResource TextMutedBrush}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Root" Background="{TemplateBinding Background}" CornerRadius="6">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"
+                                          TextElement.Foreground="{TemplateBinding Foreground}" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Root" Property="Background" Value="{StaticResource TableHeaderBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.4" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ลิงก์ข้อความล้วน เช่น ลืมรหัสผ่าน -->
+    <Style x:Key="LinkButton" TargetType="Button">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Foreground" Value="{StaticResource TextMutedBrush}" />
+        <Setter Property="FontSize" Value="{StaticResource FontSizeBase}" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="HorizontalContentAlignment" Value="Right" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <TextBlock x:Name="Label"
+                               Text="{TemplateBinding Content}"
+                               Foreground="{TemplateBinding Foreground}"
+                               FontSize="{TemplateBinding FontSize}"
+                               HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" />
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Label" Property="TextDecorations" Value="Underline" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

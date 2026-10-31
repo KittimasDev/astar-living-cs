@@ -1,0 +1,242 @@
+<!--
+    หน้าตาของหน้าต่างซ้อนมาตรฐาน
+    ทุกกล่องใช้กรอบเดียวกัน: พื้นขาว มุมมน 20 ไม่มีแถบปุ่มด้านล่าง มีรูปประกอบ
+    ตรงกับ Modal ของเว็บเดิมที่ตั้ง footer={null} แล้วจัดปุ่มเองกลางกล่อง
+-->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:b="clr-namespace:AstarLiving.Client.Common.Behaviors"
+                    xmlns:dlg="clr-namespace:AstarLiving.Client.Common.Dialogs"
+                    xmlns:vmd="clr-namespace:AstarLiving.Client.ViewModels.Dialogs">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/Themes/Tokens.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Themes/Converters.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Themes/Buttons.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Themes/Inputs.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Themes/DataDisplay.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <!-- ยืนยันออกจากหน้า -->
+    <DataTemplate DataType="{x:Type dlg:ConfirmExitDialogViewModel}">
+        <StackPanel Margin="40,48,40,32">
+            <TextBlock Text="{Binding Title}"
+                       FontSize="{StaticResource FontSizeXl}"
+                       FontWeight="SemiBold"
+                       Foreground="{StaticResource WarningBrush}"
+                       HorizontalAlignment="Center" />
+
+            <TextBlock Text="{Binding Message}"
+                       Style="{StaticResource MutedText}"
+                       Margin="0,8,0,24"
+                       HorizontalAlignment="Center" />
+
+            <Image Source="{Binding ImagePath}" Width="180" Height="180"
+                   RenderOptions.BitmapScalingMode="HighQuality" />
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,40,0,0">
+                <Button Content="ยกเลิก" Style="{StaticResource SecondaryButton}"
+                        MinWidth="120" Height="40" Margin="0,0,12,0"
+                        Command="{Binding CancelCommand}" />
+                <Button Content="ยืนยัน" Style="{StaticResource PrimaryButton}"
+                        MinWidth="120" Height="40"
+                        Background="{StaticResource WarningBrush}"
+                        Command="{Binding ConfirmCommand}" />
+            </StackPanel>
+        </StackPanel>
+    </DataTemplate>
+
+    <!-- ทำสำเร็จ -->
+    <DataTemplate DataType="{x:Type dlg:SuccessDialogViewModel}">
+        <StackPanel Margin="40,48,40,32">
+            <TextBlock Text="{Binding Title}"
+                       FontSize="{StaticResource FontSizeXl}"
+                       FontWeight="SemiBold"
+                       Foreground="#FF4CAF50"
+                       Margin="0,0,0,24"
+                       TextAlignment="Center"
+                       TextWrapping="Wrap"
+                       HorizontalAlignment="Center" />
+
+            <Image Source="{Binding ImagePath}" Width="180" Height="180"
+                   RenderOptions.BitmapScalingMode="HighQuality" />
+
+            <Button Content="ย้อนกลับ" Style="{StaticResource SecondaryButton}"
+                    MinWidth="120" Height="40" Margin="0,44,0,0"
+                    HorizontalAlignment="Center"
+                    Command="{Binding BackCommand}" />
+        </StackPanel>
+    </DataTemplate>
+
+    <!-- ข้อผิดพลาด -->
+    <DataTemplate DataType="{x:Type dlg:ErrorDialogViewModel}">
+        <StackPanel Margin="40,48,40,32">
+            <TextBlock Text="{Binding Title}"
+                       FontSize="{StaticResource FontSizeXl}"
+                       FontWeight="SemiBold"
+                       Foreground="{StaticResource DangerBrush}"
+                       TextAlignment="Center"
+                       TextWrapping="Wrap"
+                       HorizontalAlignment="Center" />
+
+            <TextBlock Text="{Binding Detail}"
+                       Style="{StaticResource MutedText}"
+                       Margin="0,10,0,0"
+                       TextAlignment="Center"
+                       TextWrapping="Wrap"
+                       Visibility="{Binding HasDetail, Converter={StaticResource BoolToVisibility}}" />
+
+            <Image Source="{Binding ImagePath}" Width="180" Height="180" Margin="0,24,0,0"
+                   RenderOptions.BitmapScalingMode="HighQuality" />
+
+            <Button Content="ย้อนกลับ" Style="{StaticResource SecondaryButton}"
+                    MinWidth="120" Height="40" Margin="0,40,0,0"
+                    HorizontalAlignment="Center"
+                    Command="{Binding BackCommand}" />
+        </StackPanel>
+    </DataTemplate>
+
+    <!-- ยืนยันทั่วไป -->
+    <DataTemplate DataType="{x:Type dlg:ConfirmDialogViewModel}">
+        <StackPanel Margin="40,48,40,32">
+            <TextBlock Text="{Binding Title}"
+                       FontSize="{StaticResource FontSizeXl}"
+                       FontWeight="SemiBold"
+                       TextAlignment="Center"
+                       TextWrapping="Wrap"
+                       HorizontalAlignment="Center">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                        <Setter Property="Foreground" Value="{StaticResource DeepBlueBrush}" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsDestructive}" Value="True">
+                                <Setter Property="Foreground" Value="{StaticResource DangerBrush}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+
+            <TextBlock Text="{Binding Message}"
+                       Style="{StaticResource MutedText}"
+                       Margin="0,8,0,0"
+                       TextAlignment="Center"
+                       TextWrapping="Wrap"
+                       Visibility="{Binding HasMessage, Converter={StaticResource BoolToVisibility}}" />
+
+            <Image Source="{Binding ImagePath}" Width="180" Height="180" Margin="0,24,0,0"
+                   RenderOptions.BitmapScalingMode="HighQuality" />
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,40,0,0">
+                <Button Content="{Binding CancelText}" Style="{StaticResource SecondaryButton}"
+                        MinWidth="120" Height="40" Margin="0,0,12,0"
+                        Command="{Binding CancelCommand}" />
+                <Button Content="{Binding ConfirmText}" MinWidth="120" Height="40"
+                        Command="{Binding ConfirmCommand}">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource PrimaryButton}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsDestructive}" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource DangerBrush}" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </StackPanel>
+        </StackPanel>
+    </DataTemplate>
+
+    <!-- รับข้อความสั้น ๆ เช่น เหตุผลที่ยกเลิกเอกสาร -->
+    <DataTemplate DataType="{x:Type dlg:TextInputDialogViewModel}">
+        <StackPanel Margin="40,40,40,32">
+            <TextBlock Text="{Binding Title}"
+                       FontSize="{StaticResource FontSizeLg}"
+                       FontWeight="SemiBold"
+                       Foreground="{StaticResource TextPrimaryBrush}"
+                       Margin="0,0,0,24"
+                       HorizontalAlignment="Center" />
+
+            <TextBlock Text="{Binding Label}" Style="{StaticResource FieldLabel}" />
+
+            <TextBox Style="{StaticResource MultilineTextBox}"
+                     MinHeight="110"
+                     b:Placeholder.Text="{Binding Placeholder}"
+                     Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock Style="{StaticResource FieldErrorText}"
+                       Text="{Binding ErrorMessage}"
+                       Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibility}}" />
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,28,0,0">
+                <Button Content="ยกเลิก" Style="{StaticResource SecondaryButton}"
+                        MinWidth="120" Height="40" Margin="0,0,12,0"
+                        Command="{Binding CancelCommand}" />
+                <Button Content="ยืนยัน" Style="{StaticResource PrimaryButton}"
+                        MinWidth="120" Height="40"
+                        Command="{Binding ConfirmCommand}" />
+            </StackPanel>
+        </StackPanel>
+    </DataTemplate>
+
+    <!-- ── กล่องอัปเดตเวอร์ชัน ───────────────────────────────────────────── -->
+    <DataTemplate DataType="{x:Type vmd:UpdateDialogViewModel}">
+        <StackPanel Margin="40,40,40,32">
+            <TextBlock Text="{Binding Title}"
+                       FontSize="{StaticResource FontSizeXl}"
+                       FontWeight="SemiBold"
+                       Foreground="{StaticResource DeepBlueBrush}"
+                       HorizontalAlignment="Center" />
+
+            <TextBlock Text="{Binding ForcedMessage}"
+                       Style="{StaticResource MutedText}"
+                       Margin="0,10,0,0"
+                       TextAlignment="Center"
+                       TextWrapping="Wrap"
+                       Visibility="{Binding ForcedMessage, Converter={StaticResource StringToVisibility}}" />
+
+            <Image Source="pack://application:,,,/Assets/Images/check.png"
+                   Width="150" Height="150" Margin="0,20,0,0"
+                   RenderOptions.BitmapScalingMode="HighQuality" />
+
+            <TextBlock Text="{Binding Message}"
+                       Margin="0,20,0,0"
+                       TextAlignment="Center"
+                       TextWrapping="Wrap"
+                       Foreground="{StaticResource TextSecondaryBrush}" />
+
+            <ProgressBar Height="6" Margin="0,16,0,0"
+                         Minimum="0" Maximum="100"
+                         Value="{Binding Progress}"
+                         Background="{StaticResource BorderLightBrush}"
+                         Foreground="{StaticResource BrandBlueBrush}"
+                         BorderThickness="0"
+                         Visibility="{Binding ShowProgress, Converter={StaticResource BoolToVisibility}}" />
+
+            <CheckBox Style="{StaticResource AppCheckBox}"
+                      Content="ติดตั้งเมื่อปิดโปรแกรม (แนะนำ)"
+                      Margin="0,18,0,0"
+                      HorizontalAlignment="Center"
+                      IsChecked="{Binding ApplyOnExit}"
+                      Visibility="{Binding CanUpdate, Converter={StaticResource BoolToVisibility}}" />
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,24,0,0">
+                <Button Content="ปิด" Style="{StaticResource SecondaryButton}"
+                        MinWidth="110" Height="40" Margin="0,0,10,0"
+                        Command="{Binding CloseCommand}"
+                        Visibility="{Binding CanDismiss, Converter={StaticResource BoolToVisibility}}" />
+
+                <Button Content="อัปเดตเดี๋ยวนี้" Style="{StaticResource PrimaryButton}"
+                        MinWidth="150" Height="40" Margin="0,0,10,0"
+                        Command="{Binding UpdateCommand}"
+                        Visibility="{Binding CanUpdate, Converter={StaticResource BoolToVisibility}}" />
+
+                <Button Content="เปิดโปรแกรมใหม่" Style="{StaticResource SuccessButton}"
+                        MinWidth="160" Height="40"
+                        Command="{Binding RestartCommand}"
+                        Visibility="{Binding CanRestart, Converter={StaticResource BoolToVisibility}}" />
+            </StackPanel>
+        </StackPanel>
+    </DataTemplate>
+
+</ResourceDictionary>

@@ -1,0 +1,36 @@
+<!--
+    หน้าชั่วคราวของหน้าจอที่ยังไม่ได้ลงมือทำ
+    มีไว้ให้เมนูและสิทธิ์ตามบทบาทใช้งานได้ครบตั้งแต่ต้น และบอกสถานะตามจริง
+-->
+<UserControl x:Class="AstarLiving.Client.Views.Pages.UnderConstructionView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:common="clr-namespace:AstarLiving.Client.Common"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=common:PageViewModel}"
+             Background="{StaticResource PageBackgroundBrush}">
+
+    <Border Style="{StaticResource Card}"
+            HorizontalAlignment="Center" VerticalAlignment="Center"
+            MaxWidth="520" Padding="40,32,40,32">
+        <StackPanel>
+            <Path Style="{StaticResource IconPath}"
+                  Data="{StaticResource IconWarning}"
+                  Stroke="{StaticResource WarningBrush}"
+                  Width="40" Height="40"
+                  HorizontalAlignment="Center" />
+
+            <TextBlock Text="{Binding Title}"
+                       Style="{StaticResource PageTitle}"
+                       HorizontalAlignment="Center"
+                       Margin="0,16,0,8" />
+
+            <TextBlock Text="หน้าจอนี้ยังอยู่ระหว่างพัฒนา ข้อมูลและคำสั่งทั้งหมดของหน้านี้ใช้งานได้แล้วที่ฝั่งเครื่องแม่ข่าย"
+                       Foreground="{StaticResource TextSecondaryBrush}"
+                       TextWrapping="Wrap"
+                       TextAlignment="Center" />
+        </StackPanel>
+    </Border>
+</UserControl>

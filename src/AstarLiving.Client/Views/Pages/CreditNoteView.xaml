@@ -1,0 +1,69 @@
+<UserControl x:Class="AstarLiving.Client.Views.Pages.CreditNoteView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:b="clr-namespace:AstarLiving.Client.Common.Behaviors"
+             xmlns:ctl="clr-namespace:AstarLiving.Client.Controls"
+             xmlns:pages="clr-namespace:AstarLiving.Client.ViewModels.Pages"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=pages:CreditNotePageViewModel}">
+
+    <ctl:ListPageShell SearchPlaceholder="ค้นหาบ้านเลขที่"
+                       ShowCreate="False"
+                       EmptyMessage="ไม่มีรายการให้ลดหนี้">
+
+        <ctl:ListPageShell.Filters>
+            <StackPanel Orientation="Horizontal">
+                <StackPanel Margin="0,0,12,0">
+                    <TextBlock Text="ปี (พ.ศ.)" Style="{StaticResource FieldLabel}" />
+                    <ComboBox Style="{StaticResource PillComboBox}" Width="130"
+                              b:Placeholder.Text="ทุกปี"
+                              ItemsSource="{Binding AvailableYears}"
+                              SelectedItem="{Binding FilterYear}" />
+                </StackPanel>
+
+                <StackPanel>
+                    <TextBlock Text="เดือน" Style="{StaticResource FieldLabel}" />
+                    <ComboBox Style="{StaticResource PillComboBox}" Width="160"
+                              b:Placeholder.Text="ทุกเดือน"
+                              ItemsSource="{Binding Months}"
+                              SelectedItem="{Binding FilterMonth}" />
+                </StackPanel>
+            </StackPanel>
+        </ctl:ListPageShell.Filters>
+
+        <ctl:ListPageShell.Table>
+            <DataGrid Style="{StaticResource AppDataGrid}" ItemsSource="{Binding Items}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="บ้านเลขที่" Binding="{Binding HouseNo}" Width="*" MinWidth="110" ElementStyle="{StaticResource LeftCell}" />
+                    <DataGridTextColumn Header="ชื่อ-นามสกุล" Binding="{Binding FullName}" Width="2*" MinWidth="200" ElementStyle="{StaticResource LeftCell}" />
+                    <DataGridTextColumn Header="เลขที่ใบแจ้งหนี้" Binding="{Binding InvNo}" Width="1.4*" MinWidth="160" ElementStyle="{StaticResource LeftCell}" />
+                    <DataGridTextColumn Header="งวด" Binding="{Binding PeriodText}" Width="*" MinWidth="95" ElementStyle="{StaticResource LeftCell}" />
+                    <DataGridTextColumn Header="ค่าปรับ (บาท)" Binding="{Binding FineText}" Width="Auto" MinWidth="131"
+                                        ElementStyle="{StaticResource NumberCell}" />
+                    <DataGridTextColumn Header="ค่าทวงถาม (บาท)" Binding="{Binding CollectionText}" Width="Auto" MinWidth="153"
+                                        ElementStyle="{StaticResource NumberCell}" />
+                    <DataGridTextColumn Header="ยอดรวม (บาท)" Binding="{Binding TotalText}" Width="Auto" MinWidth="140"
+                                        ElementStyle="{StaticResource NumberCell}" />
+                    <DataGridTextColumn Header="สถานะ" Binding="{Binding StatusText}" Width="Auto" MinWidth="120"
+                                        ElementStyle="{StaticResource CenterCell}" />
+                    <DataGridTextColumn Header="เหตุผลที่ลดหนี้" Binding="{Binding DeductedReason}" Width="1.6*" MinWidth="200" ElementStyle="{StaticResource LeftCell}" />
+
+                    <DataGridTemplateColumn Header="" Width="130" MinWidth="130">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Style="{StaticResource SecondaryButton}"
+                                        Height="32" MinWidth="100" FontSize="{StaticResource FontSizeSm}"
+                                        Content="ลดหนี้"
+                                        IsEnabled="{Binding CanReduce}"
+                                        Command="{Binding DataContext.ReduceCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                        CommandParameter="{Binding}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </ctl:ListPageShell.Table>
+    </ctl:ListPageShell>
+</UserControl>

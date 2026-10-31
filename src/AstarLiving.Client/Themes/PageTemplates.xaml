@@ -1,0 +1,74 @@
+<!--
+    จับคู่ view model ของแต่ละหน้ากับหน้าจอของมัน
+    WPF เลือก DataTemplate จากชนิดที่ตรงกันเป๊ะเท่านั้น ไม่ไล่ขึ้นไปหาคลาสแม่
+    ทุกหน้าจึงต้องมีบรรทัดของตัวเองที่นี่ เวลาเพิ่มหน้าใหม่ให้มาเพิ่มตรงนี้ด้วย
+-->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:pages="clr-namespace:AstarLiving.Client.ViewModels.Pages"
+                    xmlns:views="clr-namespace:AstarLiving.Client.Views.Pages"
+                    xmlns:settings="clr-namespace:AstarLiving.Client.Views.Pages.Settings">
+
+    <DataTemplate DataType="{x:Type pages:DashboardPageViewModel}">
+        <views:DashboardView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type pages:ResidentPageViewModel}">
+        <views:ResidentView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type pages:InvoicePageViewModel}">
+        <views:InvoiceView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type pages:CreditNotePageViewModel}">
+        <views:CreditNoteView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type pages:OverduePageViewModel}">
+        <views:OverdueView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type pages:CollectionNoticePageViewModel}">
+        <views:CollectionNoticeView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type pages:ReceiptPageViewModel}">
+        <views:ReceiptView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type pages:ReportPageViewModel}">
+        <views:ReportView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type pages:ProjectSettingsPageViewModel}">
+        <settings:ProjectSettingsView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type pages:PaymentMethodSettingsPageViewModel}">
+        <settings:PaymentMethodSettingsView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type pages:RateSettingsPageViewModel}">
+        <settings:RateSettingsView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type pages:NoticeTemplateSettingsPageViewModel}">
+        <settings:NoticeTemplateSettingsView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type pages:UserSettingsPageViewModel}">
+        <settings:UserSettingsView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type pages:SystemLogsPageViewModel}">
+        <settings:SystemLogsView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type pages:DatabaseBackupPageViewModel}">
+
+        <settings:DatabaseBackupView />
+
+    </DataTemplate>
+
+</ResourceDictionary>

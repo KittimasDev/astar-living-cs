@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
+  <!-- สัญญาที่ client กับ API ใช้ร่วมกันอ้างถึง enum ของโดเมน (เช่น PaymentStatus)
+       โปรเจค Domain ไม่พึ่งพาอะไรเลย การอ้างทางนี้จึงไม่สร้างวงจรและไม่ดึงอะไรเกินมา -->
+  <ItemGroup>
+    <PackageReference Include="System.Security.Cryptography.ProtectedData" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AstarLiving.Domain\AstarLiving.Domain.csproj" />
+  </ItemGroup>
+</Project>

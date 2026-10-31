@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <AssemblyName>AstarLiving</AssemblyName>
+    <RootNamespace>AstarLiving.Client</RootNamespace>
+    <ApplicationIcon>Assets\app.ico</ApplicationIcon>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+
+    <!-- เขียน Main เอง เพื่อให้ตัวอัปเดตได้ทำงานก่อนที่หน้าต่างใด ๆ จะถูกสร้าง -->
+    <StartupObject>AstarLiving.Client.Program</StartupObject>
+  </PropertyGroup>
+
+  <!-- App.xaml ถูกคอมไพล์เป็น Page ไม่ใช่ ApplicationDefinition
+       ไม่อย่างนั้น WPF จะสร้าง Main ให้อีกตัวจนชนกับ Program.Main -->
+  <ItemGroup>
+    <ApplicationDefinition Remove="App.xaml" />
+    <Page Include="App.xaml" />
+  </ItemGroup>
+
+  <!-- โปรเจคแบบ WPF ไม่ได้ใส่ System.Net.Http มาให้ใน implicit usings เหมือนโปรเจคทั่วไป -->
+  <ItemGroup>
+    <Using Include="System.Net.Http" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" />
+    <PackageReference Include="Microsoft.Extensions.Http.Polly" />
+    <PackageReference Include="Velopack" />
+    <PackageReference Include="Serilog.Extensions.Hosting" />
+    <PackageReference Include="Serilog.Sinks.File" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AstarLiving.Shared\AstarLiving.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\Fonts\*.ttf" />
+    <Resource Include="Assets\Images\*.png" />
+  </ItemGroup>
+</Project>

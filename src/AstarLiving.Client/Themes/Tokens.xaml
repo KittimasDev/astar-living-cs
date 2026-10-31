@@ -1,0 +1,92 @@
+<!--
+    โทเคนของดีไซน์ทั้งระบบ — ยกค่าสีและสัดส่วนมาจาก globals.css ของเว็บเดิมตรง ๆ
+    ห้ามเขียนสีเป็นค่าดิบในหน้าจอไหน ให้อ้างผ่านคีย์ในไฟล์นี้เสมอ
+-->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <!-- ── สีแบรนด์ ───────────────────────────────────────────────────────── -->
+    <Color x:Key="BrandBlueColor">#FF87D2F7</Color>
+    <Color x:Key="DeepBlueColor">#FF0054A5</Color>
+    <Color x:Key="MenuSelectedColor">#FFE6F7FF</Color>
+
+    <SolidColorBrush x:Key="BrandBlueBrush"  Color="{StaticResource BrandBlueColor}" />
+    <SolidColorBrush x:Key="BrandBlueHoverBrush" Color="#FF6FC6F3" />
+    <SolidColorBrush x:Key="DeepBlueBrush"   Color="{StaticResource DeepBlueColor}" />
+    <SolidColorBrush x:Key="MenuSelectedBrush" Color="{StaticResource MenuSelectedColor}" />
+
+    <!-- ── พื้นหลัง ──────────────────────────────────────────────────────── -->
+    <SolidColorBrush x:Key="PageBackgroundBrush"  Color="#FFFAFDFF" />
+    <SolidColorBrush x:Key="SurfaceBrush"         Color="#FFFFFFFF" />
+    <SolidColorBrush x:Key="TableHeaderBrush"     Color="#FFF0F9FF" />
+    <SolidColorBrush x:Key="TableRowBrush"        Color="#FFFAFDFF" />
+    <SolidColorBrush x:Key="TableRowHoverBrush"   Color="#0A0054A5" />
+    <SolidColorBrush x:Key="AuthBackgroundBrush"  Color="#FFF8FBFD" />
+    <SolidColorBrush x:Key="OverlayBrush"         Color="#4D000000" />
+
+    <!-- ── ข้อความ ───────────────────────────────────────────────────────── -->
+    <SolidColorBrush x:Key="TextPrimaryBrush"   Color="#FF4D4C4C" />
+    <SolidColorBrush x:Key="TextSecondaryBrush" Color="#FF747474" />
+    <SolidColorBrush x:Key="TextMutedBrush"     Color="#FFA4A4A4" />
+    <SolidColorBrush x:Key="TextOnBrandBrush"   Color="#FFFFFFFF" />
+
+    <!-- ── สีสถานะและปุ่มลงมือทำ ─────────────────────────────────────────── -->
+    <SolidColorBrush x:Key="ActionGreenBrush"      Color="#FF74BA3D" />
+    <SolidColorBrush x:Key="ActionGreenHoverBrush" Color="#FF6CAF37" />
+    <SolidColorBrush x:Key="DangerBrush"           Color="#FFEA3D3D" />
+    <SolidColorBrush x:Key="DangerHoverBrush"      Color="#FFD63636" />
+    <SolidColorBrush x:Key="WarningBrush"          Color="#FFF56C33" />
+    <SolidColorBrush x:Key="InfoBrush"             Color="{StaticResource DeepBlueColor}" />
+
+    <!-- ── สีของกราฟ (เรียงตามลำดับที่เว็บเดิมใช้) ───────────────────────── -->
+    <SolidColorBrush x:Key="Chart1Brush" Color="#FF74BA3D" />
+    <SolidColorBrush x:Key="Chart2Brush" Color="#FFEB6142" />
+    <SolidColorBrush x:Key="Chart3Brush" Color="#FFF4B740" />
+    <SolidColorBrush x:Key="Chart4Brush" Color="{StaticResource BrandBlueColor}" />
+    <SolidColorBrush x:Key="Chart5Brush" Color="{StaticResource DeepBlueColor}" />
+
+    <!-- ── เส้นขอบ ───────────────────────────────────────────────────────── -->
+    <SolidColorBrush x:Key="BorderBrush"       Color="#FFE0E0E0" />
+    <SolidColorBrush x:Key="BorderLightBrush"  Color="#FFF0F0F0" />
+    <SolidColorBrush x:Key="BorderSubtleBrush" Color="#FFE5E7EB" />
+    <SolidColorBrush x:Key="DisabledBrush"     Color="#FFF5F5F5" />
+
+    <!-- ── ตัวอักษร ──────────────────────────────────────────────────────── -->
+    <!-- ฟอนต์ฝังมากับโปรแกรม เพราะเครื่องลูกค้าต้องใช้งานแบบออฟไลน์ได้ -->
+    <FontFamily x:Key="AppFont">pack://application:,,,/Assets/Fonts/#Noto Sans Thai</FontFamily>
+
+    <sys:Double x:Key="FontSizeXs">11</sys:Double>
+    <sys:Double x:Key="FontSizeSm">12</sys:Double>
+    <sys:Double x:Key="FontSizeBase">14</sys:Double>
+    <sys:Double x:Key="FontSizeMd">16</sys:Double>
+    <sys:Double x:Key="FontSizeLg">18</sys:Double>
+    <sys:Double x:Key="FontSizeXl">22</sys:Double>
+    <sys:Double x:Key="FontSizeDisplay">44</sys:Double>
+
+    <!-- ── ขนาดและมุมมน ─────────────────────────────────────────────────── -->
+    <sys:Double x:Key="InputHeight">38</sys:Double>
+    <sys:Double x:Key="PrimaryButtonWidth">150</sys:Double>
+    <sys:Double x:Key="PrimaryButtonHeight">38</sys:Double>
+    <sys:Double x:Key="CreateButtonHeight">42</sys:Double>
+    <sys:Double x:Key="SidebarWidth">280</sys:Double>
+    <sys:Double x:Key="HeaderHeight">80</sys:Double>
+
+    <CornerRadius x:Key="PillRadius">20</CornerRadius>
+    <CornerRadius x:Key="ButtonRadius">8</CornerRadius>
+    <CornerRadius x:Key="CardRadius">12</CornerRadius>
+    <CornerRadius x:Key="ModalRadius">20</CornerRadius>
+
+    <Thickness x:Key="TableCellPadding">16,12,16,12</Thickness>
+    <Thickness x:Key="InputPadding">14,0,14,0</Thickness>
+    <Thickness x:Key="PageContentPadding">24,16,24,16</Thickness>
+
+    <!-- ── เงา ──────────────────────────────────────────────────────────── -->
+    <DropShadowEffect x:Key="SidebarShadow" BlurRadius="8" ShadowDepth="2"
+                      Direction="0" Opacity="0.05" Color="#FF000000" />
+    <DropShadowEffect x:Key="CardShadow" BlurRadius="12" ShadowDepth="2"
+                      Direction="270" Opacity="0.08" Color="#FF000000" />
+    <DropShadowEffect x:Key="ModalShadow" BlurRadius="28" ShadowDepth="4"
+                      Direction="270" Opacity="0.18" Color="#FF000000" />
+
+</ResourceDictionary>

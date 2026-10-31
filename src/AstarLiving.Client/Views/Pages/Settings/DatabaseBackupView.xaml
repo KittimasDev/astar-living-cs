@@ -1,0 +1,124 @@
+<UserControl x:Class="AstarLiving.Client.Views.Pages.Settings.DatabaseBackupView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:pages="clr-namespace:AstarLiving.Client.ViewModels.Pages"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=pages:DatabaseBackupPageViewModel}">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="0,0,0,24" MaxWidth="900" HorizontalAlignment="Left">
+
+            <!-- คำเตือนที่ทำให้กดสำรองไม่ได้ เช่น หาเครื่องมือสำรองไม่เจอ -->
+            <Border Background="#FFFFF1F0" BorderBrush="#FFFFCCC7" BorderThickness="1"
+                    CornerRadius="8" Padding="14,10,14,10" Margin="0,0,0,16"
+                    Visibility="{Binding BlockingWarning, Converter={StaticResource StringToVisibility}}">
+                <StackPanel Orientation="Horizontal">
+                    <Path Style="{StaticResource IconPath}" Data="{StaticResource IconWarning}"
+                          Stroke="{StaticResource DangerBrush}" Width="16" Height="16"
+                          VerticalAlignment="Top" Margin="0,2,10,0" />
+                    <TextBlock Text="{Binding BlockingWarning}" Foreground="{StaticResource DangerBrush}"
+                               TextWrapping="Wrap" MaxWidth="760" />
+                </StackPanel>
+            </Border>
+
+            <!-- ปุ่มหลัก -->
+            <Border Background="{StaticResource SurfaceBrush}" BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="1" CornerRadius="12" Padding="24,20,24,20">
+                <StackPanel>
+                    <TextBlock Text="สำรองฐานข้อมูล ณ ขณะนี้" Style="{StaticResource FormHeading}"
+                               HorizontalAlignment="Left" Margin="0,0,0,6" />
+
+                    <TextBlock Style="{StaticResource MutedText}" TextWrapping="Wrap" MaxWidth="760"
+                               Text="ระบบจะสร้างไฟล์สำรองของข้อมูลทั้งหมดในขณะนั้น แล้วให้เลือกที่เก็บบนเครื่องนี้ ระหว่างสำรองยังใช้งานระบบได้ตามปกติ" />
+
+                    <TextBlock Style="{StaticResource MutedText}" TextWrapping="Wrap" MaxWidth="760" Margin="0,6,0,0"
+                               Text="ไฟล์ที่ได้ใช้กู้คืนด้วยเครื่องมือ pg_restore และต้องมีบัญชีฐานข้อมูลของระบบอยู่ก่อนจึงจะกู้คืนได้" />
+
+                    <StackPanel Orientation="Horizontal" Margin="0,18,0,0">
+                        <Button Style="{StaticResource PrimaryButton}" Height="42" MinWidth="220"
+                                Command="{Binding BackupCommand}">
+                            <StackPanel Orientation="Horizontal">
+                                <Path Style="{StaticResource IconPath}" Data="{StaticResource IconDownload}"
+                                      Stroke="{StaticResource TextOnBrandBrush}" Width="16" Height="16" />
+                                <TextBlock Text="สำรองข้อมูลและดาวน์โหลด" Margin="8,0,0,0" />
+                            </StackPanel>
+                        </Button>
+
+                        <Button Style="{StaticResource SecondaryButton}" Height="42" MinWidth="110"
+                                Margin="12,0,0,0" Content="ยกเลิก"
+                                Command="{Binding CancelCommand}"
+                                Visibility="{Binding IsWorking, Converter={StaticResource BoolToVisibility}}" />
+                    </StackPanel>
+
+                    <ProgressBar Style="{StaticResource AppProgressRing}" Width="260" Margin="0,16,0,0"
+                                 HorizontalAlignment="Left"
+                                 Visibility="{Binding IsWorking, Converter={StaticResource BoolToVisibility}}" />
+
+                    <TextBlock Text="{Binding ProgressMessage}" Style="{StaticResource MutedText}"
+                               Margin="0,8,0,0" TextWrapping="Wrap" MaxWidth="760"
+                               Visibility="{Binding ProgressMessage, Converter={StaticResource StringToVisibility}}" />
+                </StackPanel>
+            </Border>
+
+            <!-- สถานะระบบ -->
+            <Border Background="{StaticResource SurfaceBrush}" BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="1" CornerRadius="12" Padding="24,20,24,20" Margin="0,16,0,0">
+                <StackPanel>
+                    <Grid>
+                        <TextBlock Text="สถานะระบบ" Style="{StaticResource FormHeading}"
+                                   HorizontalAlignment="Left" Margin="0,0,0,6" />
+
+                        <Button Style="{StaticResource SecondaryButton}" Height="34" MinWidth="110"
+                                HorizontalAlignment="Right" VerticalAlignment="Top"
+                                Content="ดูค่าล่าสุด" Command="{Binding RefreshCommand}" />
+                    </Grid>
+
+                    <TextBlock Text="{Binding ProjectName}" Style="{StaticResource MutedText}"
+                               Margin="0,0,0,10"
+                               Visibility="{Binding ProjectName, Converter={StaticResource StringToVisibility}}" />
+
+                    <TextBlock Text="{Binding RowCountNote}" Style="{StaticResource MutedText}"
+                               Foreground="{StaticResource WarningBrush}" TextWrapping="Wrap"
+                               Margin="0,0,0,10" MaxWidth="760"
+                               Visibility="{Binding RowCountNote, Converter={StaticResource StringToVisibility}}" />
+
+                    <ItemsControl ItemsSource="{Binding StatusRows}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,0,0,2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="260" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Border Grid.ColumnSpan="2" Background="{StaticResource TableRowBrush}"
+                                            CornerRadius="6" />
+
+                                    <TextBlock Grid.Column="0" Text="{Binding Label}" Margin="14,9,0,9"
+                                               Foreground="{StaticResource TextSecondaryBrush}" />
+
+                                    <TextBlock Grid.Column="1" Text="{Binding Value}" Margin="0,9,14,9"
+                                               TextWrapping="Wrap"
+                                               Foreground="{StaticResource TextPrimaryBrush}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <ProgressBar Style="{StaticResource AppProgressRing}" Width="200" Margin="0,12,0,0"
+                                 HorizontalAlignment="Left"
+                                 Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
+                </StackPanel>
+            </Border>
+
+            <Border Background="#FFFFF1F0" BorderBrush="#FFFFCCC7" BorderThickness="1"
+                    CornerRadius="8" Padding="14,10,14,10" Margin="0,16,0,0"
+                    Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibility}}">
+                <TextBlock Text="{Binding ErrorMessage}" Foreground="{StaticResource DangerBrush}"
+                           TextWrapping="Wrap" MaxWidth="800" />
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

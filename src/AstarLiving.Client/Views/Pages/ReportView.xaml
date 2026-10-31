@@ -1,0 +1,184 @@
+<UserControl x:Class="AstarLiving.Client.Views.Pages.ReportView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:b="clr-namespace:AstarLiving.Client.Common.Behaviors"
+             xmlns:ctl="clr-namespace:AstarLiving.Client.Controls"
+             xmlns:pages="clr-namespace:AstarLiving.Client.ViewModels.Pages"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=pages:ReportPageViewModel}"
+             Background="{StaticResource PageBackgroundBrush}">
+
+    <UserControl.Resources>
+        <!-- แท็บของรายงานแต่ละชนิด -->
+        <Style x:Key="ReportTabButton" TargetType="RadioButton">
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="GroupName" Value="ReportTabs" />
+            <Setter Property="Margin" Value="0,0,8,0" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border x:Name="Root" Background="Transparent" Padding="18,9,18,9" CornerRadius="20"
+                                BorderBrush="{StaticResource BorderSubtleBrush}" BorderThickness="1">
+                            <ContentPresenter x:Name="Label" VerticalAlignment="Center"
+                                              TextElement.Foreground="{StaticResource TextSecondaryBrush}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Root" Property="Background" Value="{StaticResource MenuSelectedBrush}" />
+                                <Setter TargetName="Root" Property="BorderBrush" Value="{StaticResource DeepBlueBrush}" />
+                                <Setter TargetName="Label" Property="TextElement.Foreground" Value="{StaticResource DeepBlueBrush}" />
+                                <Setter TargetName="Label" Property="TextElement.FontWeight" Value="SemiBold" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Root" Property="BorderBrush" Value="{StaticResource BrandBlueBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- แท็บเลือกชนิดรายงาน -->
+        <ItemsControl Grid.Row="0" ItemsSource="{Binding AvailableTabs}" Margin="0,0,0,16">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <RadioButton Style="{StaticResource ReportTabButton}"
+                                 Content="{Binding Label}"
+                                 Command="{Binding DataContext.SelectTabCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                 CommandParameter="{Binding}">
+                        <RadioButton.IsChecked>
+                            <MultiBinding Converter="{StaticResource AreEqual}" Mode="OneWay">
+                                <Binding Path="Type" />
+                                <Binding Path="DataContext.SelectedTab.Type" RelativeSource="{RelativeSource AncestorType=UserControl}" />
+                            </MultiBinding>
+                        </RadioButton.IsChecked>
+                    </RadioButton>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <!-- ตัวกรอง -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,14">
+            <StackPanel Margin="0,0,12,0">
+                <TextBlock Text="ปี (พ.ศ.)" Style="{StaticResource FieldLabel}" />
+                <ComboBox Style="{StaticResource PillComboBox}" Width="130"
+                          ItemsSource="{Binding AvailableYears}"
+                          SelectedItem="{Binding Year}" />
+            </StackPanel>
+
+            <StackPanel Margin="0,0,12,0">
+                <TextBlock Text="เดือน" Style="{StaticResource FieldLabel}" />
+                <ComboBox Style="{StaticResource PillComboBox}" Width="160"
+                          b:Placeholder.Text="ทั้งปี"
+                          ItemsSource="{Binding Months}"
+                          SelectedItem="{Binding Month}" />
+            </StackPanel>
+
+            <!-- ช่องค้นหาบ้านแบบพิมพ์เอง ใช้กับทุกแท็บยกเว้นแท็บที่ต้องระบุบ้านชัดเจน -->
+            <StackPanel Margin="0,0,12,0"
+                        Visibility="{Binding RequiresResident, Converter={StaticResource BoolToVisibility}, ConverterParameter=invert}">
+                <TextBlock Text="บ้านเลขที่" Style="{StaticResource FieldLabel}" />
+                <TextBox Style="{StaticResource PillTextBox}" Width="160"
+                         b:Placeholder.Text="ทุกบ้าน"
+                         Text="{Binding HouseNo, UpdateSourceTrigger=PropertyChanged}" />
+            </StackPanel>
+
+            <!-- แท็บแจ้งลูกบ้านต้องเลือกบ้านหลังเดียว จึงใช้รายการให้เลือกแทนการพิมพ์ -->
+            <StackPanel Margin="0,0,12,0"
+                        Visibility="{Binding RequiresResident, Converter={StaticResource BoolToVisibility}}">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="บ้านเลขที่" Style="{StaticResource FieldLabel}" />
+                    <TextBlock Text=" *" Style="{StaticResource FieldLabel}" Foreground="{StaticResource DangerBrush}" />
+                </StackPanel>
+                <ComboBox Style="{StaticResource PillComboBox}" Width="240"
+                          ItemsSource="{Binding Residents}"
+                          ItemTemplate="{StaticResource LabelItemTemplate}"
+                          SelectedItem="{Binding SelectedResident}" />
+            </StackPanel>
+
+            <Button Style="{StaticResource PrimaryButton}" Height="38" MinWidth="110"
+                    VerticalAlignment="Bottom" Margin="0,0,10,1"
+                    Content="ค้นหา" Command="{Binding SearchCommand}" />
+
+            <Button Style="{StaticResource SecondaryButton}" Height="38" MinWidth="130"
+                    VerticalAlignment="Bottom" Margin="0,0,10,1"
+                    Command="{Binding ExportExcelCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <Path Style="{StaticResource IconPath}" Data="{StaticResource IconDownload}" Width="15" Height="15" />
+                    <TextBlock Text="บันทึกเป็น Excel" Margin="8,0,0,0" Foreground="{StaticResource TextSecondaryBrush}" />
+                </StackPanel>
+            </Button>
+
+            <Button Style="{StaticResource SecondaryButton}" Height="38" MinWidth="150"
+                    VerticalAlignment="Bottom" Margin="0,0,10,1"
+                    Command="{Binding ExportCsvCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <Path Style="{StaticResource IconPath}" Data="{StaticResource IconDownload}" Width="15" Height="15" />
+                    <TextBlock Text="บันทึกเป็น CSV" Margin="8,0,0,0" Foreground="{StaticResource TextSecondaryBrush}" />
+                </StackPanel>
+            </Button>
+
+            <Button Style="{StaticResource SecondaryButton}" Height="38" MinWidth="140"
+                    VerticalAlignment="Bottom" Margin="0,0,10,1"
+                    Command="{Binding PrintReportCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <Path Style="{StaticResource IconPath}" Data="{StaticResource IconPrint}" Width="15" Height="15" />
+                    <TextBlock Text="พิมพ์รายงาน" Margin="8,0,0,0" Foreground="{StaticResource TextSecondaryBrush}" />
+                </StackPanel>
+            </Button>
+
+            <Button Style="{StaticResource SecondaryButton}" Height="38" MinWidth="160"
+                    VerticalAlignment="Bottom" Margin="0,0,0,1"
+                    Command="{Binding PrintSummaryCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <Path Style="{StaticResource IconPath}" Data="{StaticResource IconPrint}" Width="15" Height="15" />
+                    <TextBlock Text="พิมพ์สรุปค่าใช้จ่าย" Margin="8,0,0,0" Foreground="{StaticResource TextSecondaryBrush}" />
+                </StackPanel>
+            </Button>
+        </StackPanel>
+
+        <ProgressBar Grid.Row="2" Style="{StaticResource AppProgressRing}" Margin="0,0,0,8"
+                     Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
+
+        <Border Grid.Row="2" Background="#FFFFF7E6" BorderBrush="#FFFFD591" BorderThickness="1"
+                CornerRadius="8" Padding="14,10,14,10" Margin="0,0,0,10" VerticalAlignment="Top"
+                Visibility="{Binding RequirementMessage, Converter={StaticResource StringToVisibility}}">
+            <TextBlock Text="{Binding RequirementMessage}" Foreground="{StaticResource WarningBrush}"
+                       TextWrapping="Wrap" />
+        </Border>
+
+        <Border Grid.Row="2" Background="#FFFFF1F0" BorderBrush="#FFFFCCC7" BorderThickness="1"
+                CornerRadius="8" Padding="14,10,14,10" Margin="0,0,0,10"
+                Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibility}}">
+            <TextBlock Text="{Binding ErrorMessage}" Foreground="{StaticResource DangerBrush}" TextWrapping="Wrap" />
+        </Border>
+
+        <Border Grid.Row="3" Background="{StaticResource SurfaceBrush}" CornerRadius="10" ClipToBounds="True">
+            <Grid>
+                <DataGrid Style="{StaticResource AppDataGrid}"
+                          ItemsSource="{Binding Rows}"
+                          b:DynamicColumns.Source="{Binding Columns}" />
+
+                <ctl:EmptyState VerticalAlignment="Top" Margin="0,50,0,0"
+                                Message="ไม่มีข้อมูลตามเงื่อนไขที่เลือก"
+                                Visibility="{Binding IsEmpty, Converter={StaticResource BoolToVisibility}}" />
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

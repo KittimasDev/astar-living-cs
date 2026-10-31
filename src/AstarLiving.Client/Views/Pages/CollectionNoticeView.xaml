@@ -1,0 +1,100 @@
+<UserControl x:Class="AstarLiving.Client.Views.Pages.CollectionNoticeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:b="clr-namespace:AstarLiving.Client.Common.Behaviors"
+             xmlns:ctl="clr-namespace:AstarLiving.Client.Controls"
+             xmlns:pages="clr-namespace:AstarLiving.Client.ViewModels.Pages"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=pages:CollectionNoticePageViewModel}">
+
+    <ctl:ListPageShell SearchPlaceholder="ค้นหาบ้านเลขที่"
+                       CreateText="พิมพ์ที่เลือกไว้"
+                       EmptyMessage="ไม่มีใบทวงถาม"
+                       CreateCommand="{Binding PrintSelectedCommand}">
+
+        <!-- ปุ่มมุมขวาบนของหน้านี้คือการสั่งพิมพ์รวม ไม่ใช่การเพิ่มข้อมูล -->
+        <ctl:ListPageShell.Filters>
+            <StackPanel Orientation="Horizontal">
+                <StackPanel Margin="0,0,12,0">
+                    <TextBlock Text="ปี (พ.ศ.)" Style="{StaticResource FieldLabel}" />
+                    <ComboBox Style="{StaticResource PillComboBox}" Width="130"
+                              b:Placeholder.Text="ทุกปี"
+                              ItemsSource="{Binding AvailableYears}"
+                              SelectedItem="{Binding FilterYear}" />
+                </StackPanel>
+
+                <StackPanel Margin="0,0,12,0">
+                    <TextBlock Text="เดือน" Style="{StaticResource FieldLabel}" />
+                    <ComboBox Style="{StaticResource PillComboBox}" Width="160"
+                              b:Placeholder.Text="ทุกเดือน"
+                              ItemsSource="{Binding Months}"
+                              SelectedItem="{Binding FilterMonth}" />
+                </StackPanel>
+
+                <Button Style="{StaticResource SecondaryButton}" Height="38" MinWidth="130"
+                        VerticalAlignment="Bottom" Margin="0,0,0,1"
+                        Command="{Binding SelectAllCommand}"
+                        Content="เลือก / ยกเลิกทั้งหน้า" />
+            </StackPanel>
+        </ctl:ListPageShell.Filters>
+
+        <ctl:ListPageShell.Table>
+            <DataGrid Style="{StaticResource AppDataGrid}" ItemsSource="{Binding Items}">
+                <DataGrid.Columns>
+                    <!-- เลขลำดับนับต่อเนื่องข้ามหน้า เหมือนระบบเดิม -->
+                    <DataGridTemplateColumn Header="ลำดับ" Width="Auto" MinWidth="88">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock HorizontalAlignment="Center">
+                                    <TextBlock.Text>
+                                        <MultiBinding Converter="{StaticResource RowNumber}">
+                                            <Binding />
+                                            <Binding Path="DataContext.Items"
+                                                     RelativeSource="{RelativeSource AncestorType=UserControl}" />
+                                            <Binding Path="DataContext.Page"
+                                                     RelativeSource="{RelativeSource AncestorType=UserControl}" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="" Width="50" MinWidth="50">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox Style="{StaticResource AppCheckBox}" HorizontalAlignment="Center"
+                                          IsChecked="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTextColumn Header="บ้านเลขที่" Binding="{Binding HouseNo}" Width="*" MinWidth="110" ElementStyle="{StaticResource LeftCell}" />
+                    <DataGridTextColumn Header="ชื่อ-นามสกุล" Binding="{Binding FullName}" Width="2*" MinWidth="200" ElementStyle="{StaticResource LeftCell}" />
+                    <DataGridTextColumn Header="ประเภท" Binding="{Binding NoticeTypeText}" Width="*" MinWidth="100" ElementStyle="{StaticResource LeftCell}" />
+                    <DataGridTextColumn Header="งวด" Binding="{Binding PeriodText}" Width="*" MinWidth="95" ElementStyle="{StaticResource LeftCell}" />
+                    <DataGridTextColumn Header="วันที่ทวงถาม" Binding="{Binding NoticeDateText}" Width="*" MinWidth="130" ElementStyle="{StaticResource LeftCell}" />
+                    <DataGridTextColumn Header="จำนวนเงิน (บาท)" Binding="{Binding FeeText}" Width="Auto" MinWidth="150"
+                                        ElementStyle="{StaticResource NumberCell}" />
+                    <DataGridTextColumn Header="สถานะ" Binding="{Binding StatusText}" Width="Auto" MinWidth="120"
+                                        ElementStyle="{StaticResource CenterCell}" />
+
+                    <DataGridTemplateColumn Header="" Width="80" MinWidth="80">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Style="{StaticResource IconButton}" ToolTip="พิมพ์ใบทวงถาม"
+                                        HorizontalAlignment="Center"
+                                        Command="{Binding DataContext.PrintOneCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                        CommandParameter="{Binding}">
+                                    <Path Style="{StaticResource IconPath}" Data="{StaticResource IconPrint}"
+                                          Stroke="{StaticResource DeepBlueBrush}" Width="17" Height="17" />
+                                </Button>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </ctl:ListPageShell.Table>
+    </ctl:ListPageShell>
+</UserControl>
